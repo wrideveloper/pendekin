@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 
 const kv = await Deno.openKv();
+const KEY_EXPIRY = 14 * 24 * 60 * 60; // 14 days
 
 export async function shortenUrl(url: string) {
 	const token = nanoid(4);
@@ -9,7 +10,7 @@ export async function shortenUrl(url: string) {
 	await kv
 		.atomic()
 		.check({ key, versionstamp: null })
-		.set(["url", token], url, { expireIn: 14 * 24 * 60 * 60 })
+		.set(["url", token], url, { expireIn: KEY_EXPIRY })
 		.commit();
 	return token;
 }
@@ -23,7 +24,14 @@ export async function customiseShortenedUrl(original: string, customised: string
 		.check(originalShortened)
 		.check({ key: customisedKey, versionstamp: null })
 		.delete(originalKey)
-		.set(customisedKey, original)
+		.set(customisedKey, originalShortened.value as string, { expireIn: KEY_EXPIRY })
 		.commit();
 	return customised;
+}
+
+export async function resolveUrl(token: string): Promise<string | null> {
+	const key = ["url", token];
+	const url = await kv.get(key);
+	if (!url) return null;
+	return url.value as string;
 }
