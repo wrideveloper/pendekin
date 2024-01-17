@@ -1,30 +1,30 @@
-import { Handlers, PageProps, RouteContext } from "$fresh/src/server/types.ts";
-import { nanoid } from "nanoid";
+import { Handlers, PageProps } from "$fresh/src/server/types.ts";
 import ShortenedModal from "../islands/ShortenedModal.tsx";
+import { customiseShortenedUrl, shortenUrl } from "../services/shortener.ts";
 
 export const handler: Handlers = {
-	GET(req, ctx) {
-		return ctx.render();
-	},
 	async POST(req, ctx) {
-		const kv = await Deno.openKv();
 		const form = await req.formData();
-		const originalUrl = form.get("url") as string;
-		if (!originalUrl) {
-			return ctx.render({
-				error: "URL cannot be empty",
-			});
+		const method = form.get("_method") as string;
+		switch (method) {
+			case "PUT": {
+				const originalUrl = form.get("original_url") as string;
+				const customUrl = form.get("custom_url") as string;
+				const customised = await customiseShortenedUrl(originalUrl, customUrl);
+				return ctx.render({
+					url: customised,
+					isUpdated: true,
+				});
+			}
+			default: {
+				const originalUrl = form.get("url") as string;
+				if (!originalUrl) return ctx.render({ error: "URL cannot be empty" });
+				const shortened = await shortenUrl(originalUrl);
+				return ctx.render({
+					url: shortened
+				});
+			}
 		}
-
-		const shortenedUrl = nanoid(4);
-		// 14 days
-		await kv.set(["url", shortenedUrl], originalUrl, { expireIn: 60 * 60 * 24 * 14 });
-
-		const url = new URL(shortenedUrl, "https://s.wridev.id");
-		console.log({ originalUrl, shortenedUrl, url })
-		return ctx.render({
-			url: url.toString(),
-		});
 	},
 };
 
@@ -53,7 +53,7 @@ export default function Home(props: PageProps<{ url: string }>) {
 					Shorten
 				</button>
 			</form>
-			<ShortenedModal url={"R1ve"}/>
+			<ShortenedModal url={props.data?.url}/>
 		</div>
 	);
 }

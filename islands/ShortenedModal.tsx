@@ -2,6 +2,7 @@ import { useEffect, useRef } from "preact/hooks"
 import { useSignal } from "@preact/signals"
 import { CopyIcon } from "../components/icons/ic_copy.tsx";
 import { EditIcon } from "../components/icons/ic_edit.tsx";
+import { SaveIcon } from "../components/icons/ic_save.tsx";
 
 type ShortenedModalProps = {
 	url?: string;
@@ -30,6 +31,21 @@ export default function ShortenedModal(props: ShortenedModalProps) {
 					class="flex justify-between items-center gap-2 border border-slate-200 rounded-lg p-2"
 					method="POST"
 				>
+					<input
+						type="hidden"
+						name="_method"
+						value="PUT"
+					/>
+					<input
+						type="hidden"
+						name="original_url"
+						value={props.url}
+					/>
+					<input
+						type="hidden"
+						name="custom_url"
+						value={url}
+					/>
 					<div
 						className="flex items-center"
 					>
@@ -39,7 +55,7 @@ export default function ShortenedModal(props: ShortenedModalProps) {
 						<span
 							class={`text-lg font-medium text-slate-800 underline outline-none rounded-md ${isEditable.value ? "py-1 px-2 border border-slate-200" : ""}`}
 							contentEditable={isEditable.value}
-							onChange={(e) => {
+							onInput={(e) => {
 								const value = e.currentTarget.innerText;
 								// max custom url length is 25
 								if (value.length > 25) return;
@@ -61,14 +77,16 @@ export default function ShortenedModal(props: ShortenedModalProps) {
 						)}
 					</div>
 					<button
-						type="button"
+						type={isEditable.value ? "submit" : "button"}
 						className="btn btn-primary"
 						onClick={() => {
 							navigator.clipboard.writeText(`https://s.wridev.id/${props.url}`);
 						}}
 					>
-						{isEditable ? (
+						{isEditable.value ? (
 							<>
+								<SaveIcon className="w-4 h-4 inline-block"/>
+								Save
 							</>
 						) : (
 							<>
