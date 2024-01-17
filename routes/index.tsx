@@ -2,6 +2,12 @@ import { Handlers, PageProps } from "$fresh/src/server/types.ts";
 import ShortenedModal from "../islands/ShortenedModal.tsx";
 import { customiseShortenedUrl, shortenUrl } from "../services/shortener.ts";
 
+type HandlerResponse = {
+	url?: string;
+	isUpdated?: boolean;
+	error?: string;
+}
+
 export const handler: Handlers = {
 	async POST(req, ctx) {
 		const form = await req.formData();
@@ -28,7 +34,7 @@ export const handler: Handlers = {
 	},
 };
 
-export default function Home(props: PageProps<{ url: string }>) {
+export default function Home(props: PageProps<HandlerResponse>) {
 	return (
 		<div className="flex flex-col gap-10 items-center justify-center h-full">
 			<img
@@ -53,7 +59,7 @@ export default function Home(props: PageProps<{ url: string }>) {
 					Shorten
 				</button>
 			</form>
-			<ShortenedModal url={props.data?.url}/>
+			<ShortenedModal url={props.data?.url} isUpdated={props.data?.isUpdated} />
 		</div>
 	);
 }

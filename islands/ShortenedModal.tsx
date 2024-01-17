@@ -6,12 +6,15 @@ import { SaveIcon } from "../components/icons/ic_save.tsx";
 
 type ShortenedModalProps = {
 	url?: string;
+	isUpdated?: boolean;
+	error?: string;
 };
 
 export default function ShortenedModal(props: ShortenedModalProps) {
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const isEditable = useSignal(false);
 	const url = useSignal<string>(props.url ?? "");
+	const hasCopied = useSignal(false);
 
 	useEffect(() => {
 		if (dialogRef.current === null) return;
@@ -26,7 +29,9 @@ export default function ShortenedModal(props: ShortenedModalProps) {
 			ref={dialogRef}
 		>
 			<div className="modal-box">
-				<h3 className="font-bold text-lg mb-4">Your link is ready!</h3>
+				<h3 className="font-bold text-lg mb-4">
+					{props.isUpdated ? "Your link has been updated!" : "Your link is ready!"}
+				</h3>
 				<form
 					class="flex justify-between items-center gap-2 border border-slate-200 rounded-lg p-2"
 					method="POST"
@@ -81,6 +86,7 @@ export default function ShortenedModal(props: ShortenedModalProps) {
 						className="btn btn-primary"
 						onClick={() => {
 							navigator.clipboard.writeText(`https://s.wridev.id/${props.url}`);
+							hasCopied.value = true;
 						}}
 					>
 						{isEditable.value ? (
@@ -89,10 +95,17 @@ export default function ShortenedModal(props: ShortenedModalProps) {
 								Save
 							</>
 						) : (
-							<>
-								<CopyIcon className="w-4 h-4 inline-block"/>
-								Copy
-							</>
+							hasCopied.value ? (
+								<>
+									<CopyIcon className="w-4 h-4 inline-block"/>
+									Copied!
+								</>
+							) : (
+								<>
+									<CopyIcon className="w-4 h-4 inline-block"/>
+									Copy
+								</>
+							)
 						)}
 					</button>
 				</form>
