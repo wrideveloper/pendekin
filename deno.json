@@ -32,6 +32,8 @@
 		"tailwindcss/plugin": "npm:/tailwindcss@3.3.5/plugin.js",
 		"daisyui": "npm:daisyui@4.6.0",
 		"daisyui/": "npm:/daisyui@4.6.0/",
+		"qrcode-generator": "https://esm.sh/qrcode-generator@1.4.4",
+		"dom-to-image": "https://esm.sh/dom-to-image@2.6.0",
 		"nanoid": "npm:nanoid@5.0.4",
 		"nanoid/": "npm:/nanoid@5.0.4/",
 		"$std/": "https://deno.land/std@0.211.0/"
