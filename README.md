@@ -1,7 +1,10 @@
-# Fresh project
+# Pendekin
 
-Your new Fresh project is ready to go. You can follow the Fresh "Getting
-Started" guide here: https://fresh.deno.dev/docs/getting-started
+Pendekin means "shorten" in Indonesian. It's a URL shortener written in Deno that utilises
+its kv store API.
+
+It supports customised URLs, and will generate a random one if none is provided.
+It also gives you a QRCode that you can download.
 
 ### Usage
 
