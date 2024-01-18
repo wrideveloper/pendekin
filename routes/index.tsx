@@ -1,6 +1,7 @@
 import { Handlers, PageProps } from "$fresh/src/server/types.ts";
 import ShortenedModal from "../islands/ShortenedModal.tsx";
 import { customiseShortenedUrl, shortenUrl } from "../services/shortener.ts";
+import { UrlIcon } from "../components/icons/ic_url.tsx";
 
 type HandlerResponse = {
 	url?: string;
@@ -49,13 +50,14 @@ export default function Home(props: PageProps<HandlerResponse>) {
 				<input
 					type="text"
 					name="url"
-					placeholder="Insert your URL here"
-					className="input input-bordered w-full max-w-2xl"
+					placeholder="https://your-domain.com/your-very-long-url"
+					className="input input-bordered w-96 max-w-screen-md"
 				/>
 				<button
 					type="submit"
-					className="btn btn-primary uppercase"
+					className="btn btn-primary uppercase flex items-center"
 				>
+					<UrlIcon className="w-5 h-5" />
 					Shorten
 				</button>
 			</form>
