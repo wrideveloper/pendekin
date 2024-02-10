@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 
 const kv = await Deno.openKv();
-const KEY_EXPIRY = 14 * 24 * 60 * 60; // 14 days
+const KEY_EXPIRY = 90 * 24 * 60 * 60; // 90 days
 
 export async function shortenUrl(url: string) {
 	const token = nanoid(4);
