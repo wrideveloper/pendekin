@@ -7,7 +7,7 @@ type HandlerResponse = {
 	url?: string;
 	isUpdated?: boolean;
 	error?: string;
-}
+};
 
 export const handler: Handlers = {
 	async POST(req, ctx) {
@@ -17,18 +17,25 @@ export const handler: Handlers = {
 			case "PUT": {
 				const originalUrl = form.get("original_url") as string;
 				const customUrl = form.get("custom_url") as string;
-				const customised = await customiseShortenedUrl(originalUrl, customUrl);
-				return ctx.render({
-					url: customised,
-					isUpdated: true,
-				});
+				try {
+					const customised = await customiseShortenedUrl(
+						originalUrl,
+						customUrl,
+					);
+					return ctx.render({
+						url: customised,
+						isUpdated: true,
+					});
+				} catch {
+					return ctx.render({ error: "Customised url already exists" });
+				}
 			}
 			default: {
 				const originalUrl = form.get("url") as string;
 				if (!originalUrl) return ctx.render({ error: "URL cannot be empty" });
 				const shortened = await shortenUrl(originalUrl);
 				return ctx.render({
-					url: shortened
+					url: shortened,
 				});
 			}
 		}
@@ -38,11 +45,7 @@ export const handler: Handlers = {
 export default function Home(props: PageProps<HandlerResponse>) {
 	return (
 		<div className="flex flex-col gap-10 items-center justify-center h-full">
-			<img
-				src="/assets/wri-logo.png"
-				alt="WRI Logo"
-				class="w-72"
-			/>
+			<img src="/assets/wri-logo.png" alt="WRI Logo" class="w-72" />
 			<form
 				method="POST"
 				className="flex items-center gap-4 p-4 rounded-lg bg-white shadow-lg border border-slate-200"
