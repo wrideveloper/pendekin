@@ -17,18 +17,14 @@ export const handler: Handlers = {
 			case "PUT": {
 				const originalUrl = form.get("original_url") as string;
 				const customUrl = form.get("custom_url") as string;
-				try {
-					const customised = await customiseShortenedUrl(
-						originalUrl,
-						customUrl,
-					);
-					return ctx.render({
-						url: customised,
-						isUpdated: true,
-					});
-				} catch {
+				const customised = await customiseShortenedUrl(originalUrl, customUrl);
+				if (!customised) {
 					return ctx.render({ error: "Customised url already exists" });
 				}
+				return ctx.render({
+					url: customised,
+					isUpdated: true,
+				});
 			}
 			default: {
 				const originalUrl = form.get("url") as string;

@@ -21,9 +21,9 @@ export async function customiseShortenedUrl(original: string, customised: string
 	// trim customised url
 	const customisedKey = ["url", customised.trim()];
 
-	// check if customised already exists
-	if (await kv.get(customisedKey)) {
-		throw new Error("Customised url already exists");
+	const existingCustomised = await kv.get(customisedKey);
+	if (existingCustomised) {
+		return null;
 	}
 
 	await kv
