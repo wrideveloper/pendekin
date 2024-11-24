@@ -21,11 +21,6 @@ export async function customiseShortenedUrl(original: string, customised: string
 	// trim customised url
 	const customisedKey = ["url", customised.trim()];
 
-	const existingCustomised = await kv.get(customisedKey);
-	if (existingCustomised) {
-		return null;
-	}
-
 	await kv
 		.atomic()
 		.check(originalShortened)
