@@ -17,7 +17,9 @@ export async function shortenUrl(url: string) {
 export async function customiseShortenedUrl(original: string, customised: string) {
 	const originalKey = ["url", original];
 	const originalShortened = await kv.get<string>(originalKey);
-	const customisedKey = ["url", customised];
+
+	// trim customised url
+	const customisedKey = ["url", customised.trim()];
 
 	// check if customised already exists
 	if (await kv.get(customisedKey)) {
