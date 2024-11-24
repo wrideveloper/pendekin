@@ -8,4 +8,6 @@
 # Fresh build directory
 _fresh/
 # npm dependencies
+
+.direnv
 node_modules/
